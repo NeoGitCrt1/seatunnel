@@ -35,11 +35,13 @@ import io.debezium.relational.TableId;
 import io.debezium.util.Clock;
 import io.debezium.util.Metronome;
 import io.debezium.util.Stopwatch;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -69,6 +71,7 @@ import static io.debezium.connector.oracle.logminer.LogMinerHelper.startLogMinin
  * A {@link StreamingChangeEventSource} based on Oracle's LogMiner utility. The event handler loop
  * is executed in a separate executor, and add method afterHandleScn.
  */
+@Slf4j
 public class LogMinerStreamingChangeEventSource
         implements StreamingChangeEventSource<OracleOffsetContext> {
 
@@ -325,6 +328,9 @@ public class LogMinerStreamingChangeEventSource
                                     }
                                     startScn = endScn;
                                 }
+                            } catch (SQLSyntaxErrorException e) {
+                                log.error("query of[{}] exception:", query, e);
+                                throw e;
                             }
 
                             afterHandleScn(offsetContext);
