@@ -44,6 +44,6 @@ public class WeChatSink extends HttpSink {
                 seaTunnelRowType,
                 super.httpParameter,
                 new WeChatBotMessageSerializationSchema(
-                        new WeChatSinkConfig(pluginConfig), seaTunnelRowType));
+                        new WeChatSinkConfig(pluginConfig), seaTunnelRowType), null, null);
     }
 }

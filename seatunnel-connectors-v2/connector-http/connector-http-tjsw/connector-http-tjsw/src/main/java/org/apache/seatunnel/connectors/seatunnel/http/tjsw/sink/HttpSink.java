@@ -15,10 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.connectors.seatunnel.http.sink;
-
-import org.apache.seatunnel.format.json.JsonSerializationSchema;
-import org.apache.seatunnel.shade.com.typesafe.config.Config;
+package org.apache.seatunnel.connectors.seatunnel.http.tjsw.sink;
 
 import org.apache.seatunnel.api.common.SeaTunnelAPIErrorCode;
 import org.apache.seatunnel.api.sink.SinkWriter;
@@ -30,9 +27,10 @@ import org.apache.seatunnel.common.config.CheckResult;
 import org.apache.seatunnel.common.constants.PluginType;
 import org.apache.seatunnel.connectors.seatunnel.common.sink.AbstractSimpleSink;
 import org.apache.seatunnel.connectors.seatunnel.common.sink.AbstractSinkWriter;
-import org.apache.seatunnel.connectors.seatunnel.http.config.HttpConfig;
-import org.apache.seatunnel.connectors.seatunnel.http.config.HttpParameter;
-import org.apache.seatunnel.connectors.seatunnel.http.exception.HttpConnectorException;
+import org.apache.seatunnel.connectors.seatunnel.http.tjsw.config.HttpConfig;
+import org.apache.seatunnel.connectors.seatunnel.http.tjsw.config.HttpParameter;
+import org.apache.seatunnel.connectors.seatunnel.http.tjsw.exception.HttpConnectorException;
+import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
 import java.io.IOException;
 import java.util.Map;
@@ -84,8 +82,6 @@ public class HttpSink extends AbstractSimpleSink<SeaTunnelRow, Void>
     @Override
     public AbstractSinkWriter<SeaTunnelRow, Void> createWriter(SinkWriter.Context context)
             throws IOException {
-        boolean checkForTjsw = pluginConfig.getBoolean("checkForTjsw");
-        return new HttpSinkWriter(seaTunnelRowType, httpParameter,new JsonSerializationSchema(seaTunnelRowType),
-                checkForTjsw ? new TjswResponseParser(): null , checkForTjsw? new TjswReqBodyInterceptor(pluginConfig): null);
+        return new HttpSinkWriter(seaTunnelRowType, httpParameter);
     }
 }

@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.seatunnel.connectors.seatunnel.http.sink;
+package org.apache.seatunnel.connectors.seatunnel.http.tjsw.sink;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.seatunnel.api.serialization.SerializationSchema;
 import org.apache.seatunnel.api.sink.SupportMultiTableSinkWriter;
 import org.apache.seatunnel.api.table.type.SeaTunnelRow;
 import org.apache.seatunnel.api.table.type.SeaTunnelRowType;
 import org.apache.seatunnel.connectors.seatunnel.common.sink.AbstractSinkWriter;
-import org.apache.seatunnel.connectors.seatunnel.http.client.HttpClientProvider;
-import org.apache.seatunnel.connectors.seatunnel.http.client.HttpResponse;
-import org.apache.seatunnel.connectors.seatunnel.http.config.HttpParameter;
+import org.apache.seatunnel.connectors.seatunnel.http.tjsw.client.HttpClientProvider;
+import org.apache.seatunnel.connectors.seatunnel.http.tjsw.client.HttpResponse;
+import org.apache.seatunnel.connectors.seatunnel.http.tjsw.config.HttpParameter;
 import org.apache.seatunnel.format.json.JsonSerializationSchema;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Map;
@@ -42,25 +41,19 @@ public class HttpSinkWriter extends AbstractSinkWriter<SeaTunnelRow, Void>
     protected final HttpParameter httpParameter;
     protected final SerializationSchema serializationSchema;
     protected final ResponseParser responseParser;
-    protected final ReqBodyInterceptor reqBodyInterceptor;
-    protected final ObjectMapper objectMapper = new ObjectMapper();
 
     public HttpSinkWriter(SeaTunnelRowType seaTunnelRowType, HttpParameter httpParameter) {
-        this(seaTunnelRowType, httpParameter, new JsonSerializationSchema(seaTunnelRowType), null, null);
+        this(seaTunnelRowType, httpParameter, new JsonSerializationSchema(seaTunnelRowType));
     }
 
     public HttpSinkWriter(
             SeaTunnelRowType seaTunnelRowType,
             HttpParameter httpParameter,
-            SerializationSchema serializationSchema,
-            ResponseParser responseParser,
-            ReqBodyInterceptor reqBodyInterceptor) {
+            SerializationSchema serializationSchema) {
         this.seaTunnelRowType = seaTunnelRowType;
         this.httpParameter = httpParameter;
         this.httpClient = new HttpClientProvider(httpParameter);
         this.serializationSchema = serializationSchema;
-        this.responseParser = responseParser;
-        this.reqBodyInterceptor = reqBodyInterceptor;
     }
 
     @Override
@@ -68,24 +61,25 @@ public class HttpSinkWriter extends AbstractSinkWriter<SeaTunnelRow, Void>
         byte[] serialize = serializationSchema.serialize(element);
         String body = new String(serialize);
         try {
-            if  (reqBodyInterceptor != null) {
-                body = reqBodyInterceptor.bodyConvert(body);
-            }
             // only support post web hook
             HttpResponse response =
                     httpClient.doPost(httpParameter.getUrl(), httpParameter.getHeaders(), body);
-            log.info(
-                    "http response status code:[{}],resp content:[{}] req body [{}]",
-                    response.getCode(),
-                    response.getContent(),
-                    body)
-                    ;
-            if (responseParser != null) {
-                responseParser.check(response.getContent() == null || response.getContent().isEmpty()? null : objectMapper.readValue(response.getContent(), Map.class), response.getCode());
+            if (HttpResponse.STATUS_OK == response.getCode()) {
+                log.info("response: {}", response.getContent());
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map map = objectMapper.readValue(response.getContent(), Map.class);
+                Object code = map.get("code");
+                if (code != null && !code.toString().equals("100")) {
+                    throw new IllegalStateException("api failed");
+                }
+                return;
             }
+            log.error(
+                    "http client execute exception, http response status code:[{}], content:[{}]",
+                    response.getCode(),
+                    response.getContent());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
         }
     }
 
