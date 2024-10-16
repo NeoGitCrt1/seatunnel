@@ -82,6 +82,10 @@ Choose your runtime execution engine:
 - [Spark](https://seatunnel.apache.org/docs/start-v2/locally/quick-start-spark)
 - [Flink](https://seatunnel.apache.org/docs/start-v2/locally/quick-start-flink)
 
+BUILD:
+D:\jdk\java8_202\bin\java.exe -Dmaven.multiModuleProjectDirectory=D:\java_projects\seatunnel -Djansi.passthrough=true -Dmaven.home=C:\Users\ysy\.m2\wrapper\dists\apache-maven-3.8.4-bin\52ccbt68d252mdldqsfsn03jlf\apache-maven-3.8.4 -Dclassworlds.conf=C:\Users\ysy\.m2\wrapper\dists\apache-maven-3.8.4-bin\52ccbt68d252mdldqsfsn03jlf\apache-maven-3.8.4\bin\m2.conf "-Dmaven.ext.class.path=D:\JetBrains\IntelliJ IDEA Community Edition 2024.2.2\plugins\maven\lib\maven-event-listener.jar" "-javaagent:D:\JetBrains\IntelliJ IDEA Community Edition 2024.2.2\lib\idea_rt.jar=59937:D:\JetBrains\IntelliJ IDEA Community Edition 2024.2.2\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ysy\.m2\wrapper\dists\apache-maven-3.8.4-bin\52ccbt68d252mdldqsfsn03jlf\apache-maven-3.8.4\boot\plexus-classworlds-2.6.0.jar;C:\Users\ysy\.m2\wrapper\dists\apache-maven-3.8.4-bin\52ccbt68d252mdldqsfsn03jlf\apache-maven-3.8.4\boot\plexus-classworlds.license org.codehaus.classworlds.Launcher -Didea.version=2024.2.2 -s D:\.m2\settings.xml -DskipTests=true clean install -Dgpg.skip -DskipTests -Dspotless.check.skip=true
+
+
 ## Use Cases
 
 Explore real-world use cases of SeaTunnel, such as Weibo, Tencent Cloud, Sina, Sogou, and Yonghui Superstores. More use cases can be found on the [SeaTunnel blog](https://seatunnel.apache.org/blog).

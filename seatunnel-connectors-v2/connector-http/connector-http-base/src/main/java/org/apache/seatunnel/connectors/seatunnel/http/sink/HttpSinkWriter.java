@@ -17,7 +17,7 @@
 
 package org.apache.seatunnel.connectors.seatunnel.http.sink;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.seatunnel.api.serialization.SerializationSchema;
 import org.apache.seatunnel.api.sink.SupportMultiTableSinkWriter;
 import org.apache.seatunnel.api.table.type.SeaTunnelRow;
@@ -29,6 +29,7 @@ import org.apache.seatunnel.connectors.seatunnel.http.config.HttpParameter;
 import org.apache.seatunnel.format.json.JsonSerializationSchema;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class HttpSinkWriter extends AbstractSinkWriter<SeaTunnelRow, Void>
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void close() throws IOException {
