@@ -17,12 +17,17 @@
 
 package org.apache.seatunnel.transform;
 
+import org.apache.seatunnel.shade.com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.json.JsonMapper;
 import org.apache.seatunnel.transform.filter.FilterFieldTransformFactory;
 
+import org.apache.seatunnel.transform.s3enc.S3EncTransform;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class FilterFieldTransformFactoryTest {
+import java.util.List;
+
+public class S3EncTransformFactoryTest {
 
     @Test
     public void testOptionRule() throws Exception {

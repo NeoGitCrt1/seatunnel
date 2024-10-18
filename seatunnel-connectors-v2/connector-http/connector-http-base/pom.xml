@@ -32,6 +32,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <httpcore.version>4.4.4</httpcore.version>
         <guava-retrying.version>2.0.0</guava-retrying.version>
+        <oss.version>3.17.4</oss.version>
     </properties>
 
     <dependencies>
@@ -67,6 +68,11 @@
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>${json-path.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${oss.version}</version>
         </dependency>
     </dependencies>
 </project>

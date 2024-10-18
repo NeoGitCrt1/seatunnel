@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 @Slf4j
 class HttpFactoryTest {
@@ -46,6 +47,15 @@ class HttpFactoryTest {
 
     @Test
     void TjswReqBodyInterceptorTest() throws  JsonProcessingException {
+
+//        String input = "2024-09-09T01:01:01";
+//        Matcher matcher = TjswReqBodyInterceptor.DATE_TIME_PATTERN.matcher(input);
+//        System.out.println("matches:" + matcher.matches());
+
+//        System.out.println(input.substring(0,input.indexOf("T")) + " " + input.substring(input.indexOf("T") + 1));
+//        System.out.println(input.replaceFirst("T", " "));
+
+
         Map<String, Object> mm = new HashMap<>();
 
         mm.put("yyds", ImmutableList.of("a", "b"));

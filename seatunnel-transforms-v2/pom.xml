@@ -28,6 +28,9 @@
     <artifactId>seatunnel-transforms-v2</artifactId>
     <name>SeaTunnel : Transforms : V2</name>
 
+    <properties>
+        <oss.version>3.17.4</oss.version>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -64,7 +67,11 @@
             <artifactId>connector-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${oss.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

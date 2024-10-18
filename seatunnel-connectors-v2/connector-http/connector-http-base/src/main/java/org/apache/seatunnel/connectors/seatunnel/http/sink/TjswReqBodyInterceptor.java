@@ -1,27 +1,35 @@
 package org.apache.seatunnel.connectors.seatunnel.http.sink;
 
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.common.utils.IOUtils;
+import com.aliyun.oss.model.GetObjectRequest;
+import com.aliyun.oss.model.OSSObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.seatunnel.shade.com.fasterxml.jackson.databind.json.JsonMapper;
 import org.apache.seatunnel.shade.com.typesafe.config.Config;
 
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class TjswReqBodyInterceptor implements ReqBodyInterceptor{
-    final Config pluginConfig;
-    final JsonMapper  objectMapper = new JsonMapper();
-
+    protected final Config pluginConfig;
+    protected final JsonMapper  objectMapper = new JsonMapper();
     public TjswReqBodyInterceptor(Config pluginConfig) {
         this.pluginConfig = pluginConfig;
     }
-    private static final TypeReference<Map<String, Object>> rowType = new TypeReference<Map<String, Object>>(){};
+    protected static final TypeReference<Map<String, Object>> rowType = new TypeReference<Map<String, Object>>(){};
     @Override
     public String bodyConvert(String rawBody) {
         Map<String, Object> map;
@@ -31,33 +39,6 @@ public class TjswReqBodyInterceptor implements ReqBodyInterceptor{
             return rawBody;
         }
 
-        Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry<String, Object> itEntry = it.next();
-            if (itEntry.getKey().equals("gps")) {
-                continue;
-            }
-
-            Object itValue = itEntry.getValue();
-
-            if (itValue instanceof String && (((String) itValue).startsWith("[") || ((String) itValue).startsWith("{"))) {
-                String strVal = (String) itValue;
-                if (strVal.startsWith("[")) {
-                    try {
-                        itEntry.setValue(objectMapper.readValue(strVal, List.class));
-                    } catch (JsonProcessingException e) {
-                        //
-                    }
-                } else if (strVal.startsWith("{")) {
-                    try {
-                        itEntry.setValue(objectMapper.readValue(strVal, Map.class));
-                    } catch (JsonProcessingException e) {
-                        //
-                    }
-                }
-            }
-
-        }
         Map<String, Object> res = new HashMap<>();
 
         res.put("service_id", pluginConfig.getString("tjsw_service_id"));
