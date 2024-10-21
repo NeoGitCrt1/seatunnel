@@ -84,8 +84,10 @@ public class HttpSink extends AbstractSimpleSink<SeaTunnelRow, Void>
     @Override
     public AbstractSinkWriter<SeaTunnelRow, Void> createWriter(SinkWriter.Context context)
             throws IOException {
-        boolean checkForTjsw = pluginConfig.getBoolean("checkForTjsw");
+        boolean checkForTjsw = pluginConfig.hasPathOrNull("checkForTjsw")? false: pluginConfig.getBoolean("checkForTjsw");
+        boolean alertForTjsw = pluginConfig.hasPathOrNull("alertForTjsw")? false: pluginConfig.getBoolean("alertForTjsw");
         return new HttpSinkWriter(seaTunnelRowType, httpParameter,new JsonSerializationSchema(seaTunnelRowType),
-                checkForTjsw ? new TjswResponseParser(): null , checkForTjsw? new TjswReqBodyInterceptor(pluginConfig): null);
+                checkForTjsw ? new TjswResponseCallBackParser(pluginConfig): alertForTjsw? new TjswResponseAlertParser(pluginConfig) : null ,
+                checkForTjsw || alertForTjsw ? new TjswReqBodyInterceptor(pluginConfig): null);
     }
 }

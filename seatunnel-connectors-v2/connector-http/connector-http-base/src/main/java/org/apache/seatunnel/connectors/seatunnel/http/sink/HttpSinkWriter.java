@@ -44,7 +44,6 @@ public class HttpSinkWriter extends AbstractSinkWriter<SeaTunnelRow, Void>
     protected final SerializationSchema serializationSchema;
     protected final ResponseParser responseParser;
     protected final ReqBodyInterceptor reqBodyInterceptor;
-    protected final ObjectMapper objectMapper = new ObjectMapper();
 
     public HttpSinkWriter(SeaTunnelRowType seaTunnelRowType, HttpParameter httpParameter) {
         this(seaTunnelRowType, httpParameter, new JsonSerializationSchema(seaTunnelRowType), null, null);
@@ -76,17 +75,16 @@ public class HttpSinkWriter extends AbstractSinkWriter<SeaTunnelRow, Void>
             HttpResponse response =
                     httpClient.doPost(httpParameter.getUrl(), httpParameter.getHeaders(), body);
             log.info(
-                    "http response status code:[{}],resp content:[{}] req body [{}]",
+                    "http response status code:[{}]\nresp content:[{}]\nreq body [{}]",
                     response.getCode(),
                     response.getContent(),
-                    body)
+                    body.substring(0,500))
                     ;
             if (responseParser != null) {
-                responseParser.check(response.getContent() == null || response.getContent().isEmpty()? null : objectMapper.readValue(response.getContent(), Map.class), response.getCode());
+                responseParser.check(body,response.getContent(), response.getCode());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
         }
     }
 

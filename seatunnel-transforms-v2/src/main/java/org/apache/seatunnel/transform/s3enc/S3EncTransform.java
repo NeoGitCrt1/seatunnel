@@ -109,9 +109,6 @@ public class S3EncTransform extends AbstractCatalogSupportTransform {
                     }
                     break;
                 case ARRAY:
-
-                    log.info("rowField : {} >> {} >> isArray: {}", rowField, rowField.getClass(), rowField.getClass().isArray());
-
                     Object[] listValue = (Object[])rowField;
                     if (listValue != null && listValue.length > 0 && listValue[0] instanceof String) {
                         List<String> procList = new ArrayList<>(listValue.length);

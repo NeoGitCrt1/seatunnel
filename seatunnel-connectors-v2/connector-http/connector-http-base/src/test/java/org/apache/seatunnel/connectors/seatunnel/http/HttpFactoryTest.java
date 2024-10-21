@@ -18,6 +18,9 @@
 package org.apache.seatunnel.connectors.seatunnel.http;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.seatunnel.connectors.seatunnel.http.sink.HttpSinkFactory;
 import org.apache.seatunnel.connectors.seatunnel.http.sink.TjswReqBodyInterceptor;
@@ -80,5 +83,21 @@ class HttpFactoryTest {
         Map<String, String> stringStringMap = objectMapper.readValue(gps, new TypeReference<Map<String, String>>() {
         });
         System.out.println(stringStringMap);
+    }
+
+    @Test
+    void jsonPathTest() throws JsonProcessingException {
+        DocumentContext parse = JsonPath.parse(objectMapper.writeValueAsString(ImmutableMap.of(
+                "ss", "ss+v",
+                "fpxx", ImmutableList.of(
+                        ImmutableMap.of("ddh", "112331213")
+
+                ))));
+
+
+        String fpDdh = parse.read("$.fpxx[0].ddh", String.class);
+        String lpDdh = parse.read("$.lpxx[0].ddh", String.class);
+
+
     }
 }
