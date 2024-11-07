@@ -47,7 +47,7 @@ public class TjswResponseCallBackParser implements ResponseParser{
                     "platformNo", "216","target", "TIAN_JIN",
                     "records", ImmutableList.of(
                             ImmutableMap.of("apiId", apiCode,
-                                    "body", reqBody.substring(0,500),
+                                    "body", reqBody.substring(0,Math.min(2000, reqBody.length())),
                                     "result", content,
                                     "orderNo", dduuid
                             )

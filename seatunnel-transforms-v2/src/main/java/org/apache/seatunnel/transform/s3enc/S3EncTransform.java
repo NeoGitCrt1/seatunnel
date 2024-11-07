@@ -60,8 +60,7 @@ public class S3EncTransform extends AbstractCatalogSupportTransform {
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-    private String downEncode(String ossKey) {
-        log.info("get ossKey: {}" , ossKey);
+    private String downEncode(String ossKey, Column fromColumn) {
         if (ossKey == null || ossKey.isEmpty()) {
             return "";
         }
@@ -87,7 +86,7 @@ public class S3EncTransform extends AbstractCatalogSupportTransform {
             String fileType = ossKey.substring(ossKey.lastIndexOf('.') + 1);
             return  "data:image/" + fileType + ";base64," + b64;
         } catch (Exception e) {
-            log.error("文件下载/压缩/编码错误: {}", ossKey, e);
+            log.error("文件下载/压缩/编码错误: {} >> {}", fromColumn.getName(), ossKey, e);
             return "";
         }
     }
@@ -106,7 +105,7 @@ public class S3EncTransform extends AbstractCatalogSupportTransform {
             switch (column.getDataType().getSqlType()) {
                 case STRING:
                     if (((String)rowField).startsWith(PREFIX)) {
-                        outFields[i] = downEncode(rowField.toString().substring(PREFIX.length()));
+                        outFields[i] = downEncode(rowField.toString().substring(PREFIX.length()), column);
                     } else {
                         outFields[i] = rowField;
                     }
@@ -120,11 +119,12 @@ public class S3EncTransform extends AbstractCatalogSupportTransform {
                             if (elm.startsWith(PREFIX)) {
                                 String s3key = elm.substring(PREFIX.length());
                                 if (splitBy.isEmpty()) {
-                                    procList.add(downEncode(s3key));
+                                    procList.add(downEncode(s3key, column));
                                 } else {
+                                    log.info("get ossKey for splitBy : {} >> {}" , column.getName(), s3key);
                                     String[] splitKeys = s3key.split(splitBy);
                                     for (String splitKey : splitKeys) {
-                                        procList.add(downEncode(splitKey));
+                                        procList.add(downEncode(splitKey, column));
                                     }
                                 }
                             } else {
