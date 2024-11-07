@@ -100,6 +100,9 @@ public class S3EncTransform extends AbstractCatalogSupportTransform {
         for (int i = 0; i < rowFields.length; i++) {
             Column column = columns.get(i);
             Object rowField = rowFields[i];
+            if (rowField == null) {
+                continue;
+            }
             switch (column.getDataType().getSqlType()) {
                 case STRING:
                     if (((String)rowField).startsWith(PREFIX)) {
